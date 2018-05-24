@@ -3,7 +3,7 @@ import cv2 as cv
 from config import MAX_PATH_LEN
 
 
-def no_op():
+def no_op(data):
     """
     No operation - passed into OpenCV when no logic needs to occur for an operation
     :return: None
