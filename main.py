@@ -22,7 +22,7 @@ cv.namedWindow('frame')
 #
 # List of properties for the sliders
 names = ["H Min", "S Min", "V Min", "H Max", "S Max", "V Max"]
-values = [0, 169, 152, 201, 255, 255]
+values = [0, 94, 152, 201, 255, 255]
 
 # Create trackbars (sliders) on the image window to choose the values for the above values while the program is
 # running (rather than hard coded). Defaults to values set above.
