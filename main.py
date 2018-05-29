@@ -18,7 +18,7 @@ else:
 cv.namedWindow("frame")
 
 # Create a new window for trackbars
-cv.namedWindow("bars")
+cv.namedWindow("bars", cv.WINDOW_NORMAL)
 
 # These values are used to filter the camera image so that H is between Hmin and Hmax, S is between Smin and Smax, and
 # V is between Vmin and Vmax.  If the HSV value falls outside of any of the ranges, then it is set to 0 (a black pixel).
@@ -78,7 +78,7 @@ while True:
 
     # Our operations on the frame come here
     image, masked, thresholded = process(frame)
-
+    
     # Drawing lines to indicate the xy coord plane
     drawn_frame = frame
     cv.arrowedLine(drawn_frame, (points[0],points[1]), (points[2],points[3]), (255,0,0),5)
@@ -93,7 +93,7 @@ while True:
     cv.circle(drawn_frame, (int(raw_x),int(raw_y)), 5, (0,255,255), -1)
 
     # Getting scaling data from trackbar
-    scales = [cv.getTrackbarPos("X Scale", "frame"),cv.getTrackbarPos("Y Scale", "frame")]
+    scales = [cv.getTrackbarPos("X Scale", "bars")/1000,cv.getTrackbarPos("Y Scale", "bars")/1000]
 
     # Processing data
     scaled_data = compute(points, org_data, [raw_x, raw_y, scales[0], scales[1]])

@@ -63,16 +63,16 @@ def compute(framearr, orgarr, dataarr):
         tmp.append(framearr[rc])
         rc = rc + 1
     if framearr[3] - framearr[1] == 0:
-        if not ((orgarr[0] < py[0] and framearr[2] < framearr[0]) or (orgarr[0] > py[0] and framearr[2] > framearr[0])):
+        if ((orgarr[0] < py[0] and framearr[2] < framearr[0]) or (orgarr[0] > py[0] and framearr[2] > framearr[0])):
             res[0] = -res[0]
     else:
-        if not ((orgarr[1] < py[1] and framearr[3] < framearr[1]) or (orgarr[1] > py[1] and framearr[3] > framearr[1])):
+        if ((orgarr[1] < py[1] and framearr[3] < framearr[1]) or (orgarr[1] > py[1] and framearr[3] > framearr[1])):
             res[0] = -res[0]
     if framearr[7] - framearr[5] == 0:
-        if not ((orgarr[0] < px[0] and framearr[6] < framearr[4]) or (orgarr[0] > px[0] and framearr[6] > framearr[4])):
+        if ((orgarr[0] < px[0] and framearr[6] < framearr[4]) or (orgarr[0] > px[0] and framearr[6] > framearr[4])):
             res[1] = -res[1]
     else:
-        if not ((orgarr[1] < px[1] and framearr[7] < framearr[5]) or (orgarr[1] > px[1] and framearr[7] > framearr[5])):
+        if ((orgarr[1] < px[1] and framearr[7] < framearr[5]) or (orgarr[1] > px[1] and framearr[7] > framearr[5])):
             res[1] = -res[1]
     return res
 
