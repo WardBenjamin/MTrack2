@@ -80,8 +80,9 @@ while True:
 
     # Our operations on the frame come here
     image, masked, thresholded, path = process(frame)
-    raw_x = path[-1][0]
-    raw_y = path[-1][1]
+    if path is not None:
+        raw_x = path[-1][0]
+        raw_y = path[-1][1]
 
     # Drawing lines to indicate the xy coord plane
     drawn_frame = image
