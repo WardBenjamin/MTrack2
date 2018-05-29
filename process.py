@@ -60,54 +60,54 @@ def process(frame):
     # Dilate tries to grow a region so that neighboring regions may lump together into a single region.
     # If the two or more regions are too far apart in pixel size (beyond iterations=3), then the regions stay separated.
     thresh = cv.dilate(thresh, kernel, iterations=3)
-    #
-    # # Find the contours (outlines) of all the shapes in the threshold
-    # # Contours are the bounding boxes along the edges of where the vision target is surrounded by 0 pixels
-    # contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
-    #
-    # # Reduce the amount of points in each set of contours. We want to draw simplified bounding boxes around each of the
-    # # vision targets, so we overwrite a contour with fewer data points
-    # for x in range(0, len(contours)):
-    #     epsilon = 0.01 * cv.arcLength(contours[x], True)
-    #     contours[x] = cv.approxPolyDP(contours[x], epsilon, True)
-    #
-    # # Eliminate contours by perimeter
-    # # This removes entries in contours that are too small, less than MIN_PERIMETER in bounding box length
-    # contours = [x for x in contours if not cv.arcLength(x, True) < MIN_PERIMETER]
-    #
-    # # The bounding boxes of the current frame only
-    # bounding_boxes = []
-    #
-    # # Actually create the bounding boxes and draw them on screen
-    # for c in contours:
-    #     # OpenCV determines the actual bounding box coordinates from the contour
-    #     x, y, w, h = cv.boundingRect(c)
-    #
-    #     # We store it in an array, x, y are the upper left, and w, h are the width, height
-    #     bounding_boxes.append([x, y, w, h])
-    #
-    #     # Draw in the image a rectangle (x+w, y+h) is the lower right corner. (0, 255, 0) is BGR to draw in green, and
-    #     # the 2 represents the line thickness
-    #     cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
-    #
-    # # We choose to draw the center point of the last few frames of the same tracked object on the screen, as a circle of
-    # # different sizes as the data gets older.  This is just a way to represent the motion of the target over the last
-    # # few frames on the computer screen.
-    # # Go over every path and draw circles for a visual representation. Radius is based on path index.
-    # for path in paths:
-    #     for i, p in enumerate(path):
-    #         cv.circle(image, (int(p[0]), int(p[1])), i, (255, 0, 0), thickness=-1)
-    #     # hull = cv2.convexHull(c)
-    #     # hulls.append(hull)
-    #     # cv2.drawContours(image, [hull], 0, (0, 255, 0), 3)
-    #
-    # # Verify which bounding box is which from frame to frame
-    # track(bounding_boxes)
+
+    # Find the contours (outlines) of all the shapes in the threshold
+    # Contours are the bounding boxes along the edges of where the vision target is surrounded by 0 pixels
+    _img, contours, hierarchy = cv.findContours(thresh, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+
+    # Reduce the amount of points in each set of contours. We want to draw simplified bounding boxes around each of the
+    # vision targets, so we overwrite a contour with fewer data points
+    for x in range(0, len(contours)):
+        epsilon = 0.01 * cv.arcLength(contours[x], True)
+        contours[x] = cv.approxPolyDP(contours[x], epsilon, True)
+
+    # Eliminate contours by perimeter
+    # This removes entries in contours that are too small, less than MIN_PERIMETER in bounding box length
+    contours = [x for x in contours if not cv.arcLength(x, True) < MIN_PERIMETER]
+
+    # The bounding boxes of the current frame only
+    bounding_boxes = []
+
+    # Actually create the bounding boxes and draw them on screen
+    for c in contours:
+        # OpenCV determines the actual bounding box coordinates from the contour
+        x, y, w, h = cv.boundingRect(c)
+
+        # We store it in an array, x, y are the upper left, and w, h are the width, height
+        bounding_boxes.append([x, y, w, h])
+
+        # Draw in the image a rectangle (x+w, y+h) is the lower right corner. (0, 255, 0) is BGR to draw in green, and
+        # the 2 represents the line thickness
+        cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # We choose to draw the center point of the last few frames of the same tracked object on the screen, as a circle of
+    # different sizes as the data gets older.  This is just a way to represent the motion of the target over the last
+    # few frames on the computer screen.
+    # Go over every path and draw circles for a visual representation. Radius is based on path index.
+    for path in paths:
+        for i, p in enumerate(path):
+            cv.circle(image, (int(p[0]), int(p[1])), i, (255, 0, 0), thickness=-1)
+        # hull = cv2.convexHull(c)
+        # hulls.append(hull)
+        # cv2.drawContours(image, [hull], 0, (0, 255, 0), 3)
+
+    # Verify which bounding box is which from frame to frame
+    track(bounding_boxes, image)
 
     return image, mask, thresh
 
 
-def track(boxes):
+def track(boxes, image):
     all_matched = (len(boxes) == 0 and len(paths) == 0)
 
     if not all_matched:
@@ -116,7 +116,7 @@ def track(boxes):
 
         for x, path in enumerate(paths):
             # Where it guesses it will be next frame given the path over the last few frames
-            possible_locations = interpolate_new_position(path)
+            possible_locations = interpolate_new_position(path, image)
 
             # Possible matched boxes. Algorithm works by comparing the interpolated box to the actual box
             # and adds it if it is within MAX_DISTANCE_INTERPOLATED pixels
@@ -151,6 +151,7 @@ def track(boxes):
 
             # Proceeds to further eliminate if there is more than one box by which one is the closest
             if len(possible_results) > 0:  # There are possible results
+                print('found results')
                 distances = [i[1] for i in possible_results]  # All the distances for the possible results
                 best = distances.index(min(distances))  # Index of the possibleResult with the smallest distance
                 optimal_solution = possible_results[best]  # the one with minimum miss distance
@@ -165,6 +166,8 @@ def track(boxes):
                 # Labels it on screen to make things all pretty-like
                 cv.putText(image, str(ids[x]), (int(optimal_solution[2]), int(optimal_solution[3] + 10)),
                            cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))  # Labels the value with the ID
+
+                print('ID: {}, X: {}, Y: {}'.format(ids[x], optimal_solution[2], optimal_solution[3]))
 
             # If the box isn't found, we can take one of two paths.
             else:
@@ -200,10 +203,10 @@ def track(boxes):
 
             # Give each new box a tracking ID and a path
             for box in boxes:
-                ids.append(tracking_id.next())
+                ids.append(next(tracking_id))
                 cx = box[0] + box[2] / 2.0
                 cy = box[1] + box[3] / 2.0
                 paths.append([[cx, cy]])
 
     else:
-        print("Something really terrible happened")
+        print("No matched boxes to track")
