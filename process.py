@@ -21,10 +21,13 @@ paths = []
 def process(frame):
     # Get the values from the sliders and adjust the filter values properly
     # We call these green because the LED is green.  If the LEDs were a different color, then we'd change that here.
-    lower_green = np.array([cv.getTrackbarPos('H Min', 'frame'), cv.getTrackbarPos('S Min', 'frame'),
-                            cv.getTrackbarPos('V Min', 'frame')])  # HSV Value
-    upper_green = np.array([cv.getTrackbarPos('H Max', 'frame'), cv.getTrackbarPos('S Max', 'frame'),
-                            cv.getTrackbarPos('V Max', 'frame')])  # HSV Value
+    lower_green = np.array([cv.getTrackbarPos('H Min', 'bars'), cv.getTrackbarPos('S Min', 'bars'),
+                            cv.getTrackbarPos('V Min', 'bars')])  # HSV Value
+    upper_green = np.array([cv.getTrackbarPos('H Max', 'bars'), cv.getTrackbarPos('S Max', 'bars'),
+                            cv.getTrackbarPos('V Max', 'bars')])  # HSV Value
+
+    print(lower_green)
+    print(upper_green)
 
     # Blur to reduce noise
     # The blur makes very small pixel regions of 5 by 5 "fuzz" into 0.  It removes spurious small regions that match the
@@ -104,7 +107,7 @@ def process(frame):
     # Verify which bounding box is which from frame to frame
     track(bounding_boxes, image)
 
-    return image, mask, thresh
+    return image, mask, thresh, next(iter(paths or []), None)
 
 
 def track(boxes, image):
@@ -207,6 +210,8 @@ def track(boxes, image):
                 cx = box[0] + box[2] / 2.0
                 cy = box[1] + box[3] / 2.0
                 paths.append([[cx, cy]])
+
+        return paths
 
     else:
         print("No matched boxes to track")

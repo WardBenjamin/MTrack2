@@ -79,10 +79,12 @@ while True:
     ret, frame = cap.read()
 
     # Our operations on the frame come here
-    image, masked, thresholded = process(frame)
+    image, masked, thresholded, path = process(frame)
+    raw_x = path[-1][0]
+    raw_y = path[-1][1]
 
     # Drawing lines to indicate the xy coord plane
-    drawn_frame = frame
+    drawn_frame = image
     cv.arrowedLine(drawn_frame, (points[0], points[1]), (points[2], points[3]), (255, 0, 0), 5)
     cv.arrowedLine(drawn_frame, (points[4], points[5]), (points[6], points[7]), (0, 0, 255), 5)
     cv.circle(drawn_frame, (points[0], points[1]), 5, (255, 0, 0), -1)
