@@ -28,7 +28,8 @@ cv.namedWindow("bars", cv.WINDOW_NORMAL)
 names = ["H Min", "S Min", "V Min", "H Max", "S Max", "V Max"]
 values = [0, 94, 152, 201, 255, 255]
 
-def on_win_click(event,x,y,flags,params):
+
+def on_win_click(event, x, y, flags, params):
     global current_point
     global points
     global raw_x
@@ -37,17 +38,18 @@ def on_win_click(event,x,y,flags,params):
         if current_point >= len(points) - 1:
             current_point = 0
         points[current_point] = x
-        points[current_point+1] = y
+        points[current_point + 1] = y
         current_point += 2
     raw_x = x
     raw_y = y
+
 
 # These values are used to define the 2d plane mapped to pixel coordinates
 points = [1, 0, 2, 0, 0, 1, 0, 2]
 # This is used to keep track of which points is being set. If equal to len(points), no points are currently set
 current_point = 0;
 # Used for scaling units
-scales = [1,1]
+scales = [1, 1]
 
 # Used for converting raw pixel data to real data
 raw_x = 0
@@ -62,7 +64,7 @@ for index in range(6):
 cv.createTrackbar("X Scale", "bars", 1000, 1000, no_op)
 cv.createTrackbar("Y Scale", "bars", 1000, 1000, no_op)
 
-cv.setMouseCallback("frame", on_win_click,)
+cv.setMouseCallback("frame", on_win_click, )
 
 while True:
     # image is pulled from the camera using OpenCV. This variable represents all of the pixel values coming off the
@@ -78,27 +80,27 @@ while True:
 
     # Our operations on the frame come here
     image, masked, thresholded = process(frame)
-    
+
     # Drawing lines to indicate the xy coord plane
     drawn_frame = frame
-    cv.arrowedLine(drawn_frame, (points[0],points[1]), (points[2],points[3]), (255,0,0),5)
-    cv.arrowedLine(drawn_frame, (points[4],points[5]), (points[6],points[7]), (0,0,255),5)
-    cv.circle(drawn_frame, (points[0],points[1]), 5, (255,0,0), -1)
-    cv.circle(drawn_frame, (points[4],points[5]), 5, (0,0,255), -1)
-    
+    cv.arrowedLine(drawn_frame, (points[0], points[1]), (points[2], points[3]), (255, 0, 0), 5)
+    cv.arrowedLine(drawn_frame, (points[4], points[5]), (points[6], points[7]), (0, 0, 255), 5)
+    cv.circle(drawn_frame, (points[0], points[1]), 5, (255, 0, 0), -1)
+    cv.circle(drawn_frame, (points[4], points[5]), 5, (0, 0, 255), -1)
+
     # Drawing the origin of xy coord plane
     org_data = origin(points)
-    cv.circle(drawn_frame, (int(org_data[0]),int(org_data[1])), 5, (0,255,0), -1)
-    
-    cv.circle(drawn_frame, (int(raw_x),int(raw_y)), 5, (0,255,255), -1)
+    cv.circle(drawn_frame, (int(org_data[0]), int(org_data[1])), 5, (0, 255, 0), -1)
+
+    cv.circle(drawn_frame, (int(raw_x), int(raw_y)), 5, (0, 255, 255), -1)
 
     # Getting scaling data from trackbar
-    scales = [cv.getTrackbarPos("X Scale", "bars")/1000,cv.getTrackbarPos("Y Scale", "bars")/1000]
+    scales = [cv.getTrackbarPos("X Scale", "bars") / 1000, cv.getTrackbarPos("Y Scale", "bars") / 1000]
 
     # Processing data
     scaled_data = compute(points, org_data, [raw_x, raw_y, scales[0], scales[1]])
     print(scaled_data)
-    
+
     # Display the resulting frame
     cv.imshow("frame", drawn_frame)
     cv.imshow("mask", masked)
@@ -106,7 +108,6 @@ while True:
 
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
-
 
 # When everything is complete, release the capture
 cap.release()
