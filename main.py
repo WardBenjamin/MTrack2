@@ -1,5 +1,6 @@
 import cv2 as cv
 import sys
+import time
 
 from process import process
 from tracking_utility import no_op
@@ -35,6 +36,7 @@ def on_win_click(event, x, y, flags, params):
     global points
     global raw_x
     global raw_y
+    global time_offset
     if event == cv.EVENT_LBUTTONUP:
         if current_point >= len(points) - 1:
             current_point = 0
@@ -43,7 +45,8 @@ def on_win_click(event, x, y, flags, params):
         current_point += 2
     raw_x = x
     raw_y = y
-
+    if event == cv.EVENT_RBUTTONUP:
+        time_offset = time.clock()
 
 # These values are used to define the 2d plane mapped to pixel coordinates
 points = [1, 0, 2, 0, 0, 1, 0, 2]
@@ -67,6 +70,7 @@ cv.createTrackbar("Y Scale", "bars", 1000, 1000, no_op)
 
 cv.setMouseCallback("frame", on_win_click, )
 
+time_offset = time.clock();
 while True:
     # image is pulled from the camera using OpenCV. This variable represents all of the pixel values coming off the
     # camera stream. The word "frame" represents a single image from a stream of images from a camera, so "frame" and
@@ -103,7 +107,7 @@ while True:
 
     # Processing data
     scaled_data = compute(points, org_data, [raw_x, raw_y, scales[0], scales[1]])
-    print(scaled_data)
+    scaled_data[2] = time.clock() - time_offset
 
     # Display the resulting frame
     cv.imshow("frame", drawn_frame)
