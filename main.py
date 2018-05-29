@@ -9,6 +9,7 @@ from mtrackmath import origin
 # cap is the capture device of the image, meaning that it is used to get new images from the camera. The camera has a
 # physical device identifier of /dev/video0 on the computer filesystem, so we provide that index. We also have the
 # option of providing a URL for an MJPG stream.
+
 if len(sys.argv) > 1:
     cap = cv.VideoCapture(sys.argv[1])
 else:

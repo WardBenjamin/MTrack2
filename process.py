@@ -21,13 +21,10 @@ paths = []
 def process(frame):
     # Get the values from the sliders and adjust the filter values properly
     # We call these green because the LED is green.  If the LEDs were a different color, then we'd change that here.
-    lower_green = np.array([cv.getTrackbarPos('H Min', 'bars'), cv.getTrackbarPos('S Min', 'bars'),
+    lower_hsv = np.array([cv.getTrackbarPos('H Min', 'bars'), cv.getTrackbarPos('S Min', 'bars'),
                             cv.getTrackbarPos('V Min', 'bars')])  # HSV Value
-    upper_green = np.array([cv.getTrackbarPos('H Max', 'bars'), cv.getTrackbarPos('S Max', 'bars'),
+    upper_hsv = np.array([cv.getTrackbarPos('H Max', 'bars'), cv.getTrackbarPos('S Max', 'bars'),
                             cv.getTrackbarPos('V Max', 'bars')])  # HSV Value
-
-    print(lower_green)
-    print(upper_green)
 
     # Blur to reduce noise
     # The blur makes very small pixel regions of 5 by 5 "fuzz" into 0.  It removes spurious small regions that match the
@@ -44,7 +41,7 @@ def process(frame):
     # Mask the image to only include the colors we're looking for
     # A Mask is going to make a monochrome image (rather than RGB it is grayscale) where the pixel value is kept if
     # within the range and set to 0 if it out of the range.  This means that each pixel is 8 bits
-    mask = cv.inRange(hsv, lower_green, upper_green)
+    mask = cv.inRange(hsv, lower_hsv, upper_hsv)
 
     # Threshold the image for the sake of all of the other things we have to do
     # The thresholded image is now a binary mask, of 0 or 1 (still stored as 8 bits for memory purposes), so a pixel is
@@ -154,7 +151,6 @@ def track(boxes, image):
 
             # Proceeds to further eliminate if there is more than one box by which one is the closest
             if len(possible_results) > 0:  # There are possible results
-                print('found results')
                 distances = [i[1] for i in possible_results]  # All the distances for the possible results
                 best = distances.index(min(distances))  # Index of the possibleResult with the smallest distance
                 optimal_solution = possible_results[best]  # the one with minimum miss distance
@@ -170,7 +166,7 @@ def track(boxes, image):
                 cv.putText(image, str(ids[x]), (int(optimal_solution[2]), int(optimal_solution[3] + 10)),
                            cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))  # Labels the value with the ID
 
-                print('ID: {}, X: {}, Y: {}'.format(ids[x], optimal_solution[2], optimal_solution[3]))
+                # print('ID: {}, X: {}, Y: {}'.format(ids[x], optimal_solution[2], optimal_solution[3]))
 
             # If the box isn't found, we can take one of two paths.
             else:
