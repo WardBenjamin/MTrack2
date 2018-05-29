@@ -1,6 +1,9 @@
+import threading
+
 import cv2 as cv
 import sys
 
+from graph import run_plot_thread
 from process import process
 from tracking_utility import no_op
 from mtrackmath import compute
@@ -48,9 +51,11 @@ def on_win_click(event, x, y, flags, params):
 # These values are used to define the 2d plane mapped to pixel coordinates
 points = [1, 0, 2, 0, 0, 1, 0, 2]
 # This is used to keep track of which points is being set. If equal to len(points), no points are currently set
-current_point = 0;
+current_point = 0
 # Used for scaling units
 scales = [1, 1]
+
+scaled_data = []
 
 # Used for converting raw pixel data to real data
 raw_x = 0
@@ -66,6 +71,11 @@ cv.createTrackbar("X Scale", "bars", 1000, 1000, no_op)
 cv.createTrackbar("Y Scale", "bars", 1000, 1000, no_op)
 
 cv.setMouseCallback("frame", on_win_click, )
+
+plot_thread = threading.Thread(target=run_plot_thread, args=())
+plot_thread.daemon = True  # Daemonize thread
+plot_thread .start()  # Start the execution
+
 
 while True:
     # image is pulled from the camera using OpenCV. This variable represents all of the pixel values coming off the
