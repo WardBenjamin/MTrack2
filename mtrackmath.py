@@ -1,7 +1,7 @@
 import math
 
 
-def compute(framearr, dataarr, scalearr):
+def compute(framearr, orgarr, dataarr):
     res = [0, 0, 0]
     tmp = []
     rc = 0
@@ -10,23 +10,23 @@ def compute(framearr, dataarr, scalearr):
     while rc < rm:
         tmp.append(framearr[rc])
         rc += 1
-    if framearr[7] - framearr[5] == 0:
-        tmp[0] = scalearr[0]
-        tmp[1] = scalearr[1]
-        tmp[2] = scalearr[0]
-        tmp[3] = scalearr[1] + 10
+    if framearr[3] - framearr[1] == 0:
+        tmp[0] = dataarr[0]
+        tmp[1] = dataarr[1]
+        tmp[2] = dataarr[0]
+        tmp[3] = dataarr[1] + 10
         res[2] = 1
-    elif framearr[6] - framearr[4] == 0:
-        tmp[0] = scalearr[0]
-        tmp[1] = scalearr[1]
-        tmp[2] = scalearr[0] + 10
-        tmp[3] = scalearr[1]
+    elif framearr[2] - framearr[0] == 0:
+        tmp[0] = dataarr[0]
+        tmp[1] = dataarr[1]
+        tmp[2] = dataarr[0] + 10
+        tmp[3] = dataarr[1]
         res[2] = 2
     else:
-        tmp[0] = scalearr[0]
-        tmp[1] = scalearr[1]
-        tmp[2] = scalearr[0] + 10
-        tmp[3] = scalearr[1] + ((framearr[3] - framearr[1]) / (framearr[2] - framearr[0]) * 10)
+        tmp[0] = dataarr[0]
+        tmp[1] = dataarr[1]
+        tmp[2] = dataarr[0] + 10
+        tmp[3] = dataarr[1] + ((framearr[3] - framearr[1]) / (framearr[2] - framearr[0]) * 10)
         res[2] = 3
     px = origin(tmp)
     rc = 0
@@ -35,27 +35,27 @@ def compute(framearr, dataarr, scalearr):
     while rc < rm:
         tmp.append(framearr[rc])
         rc = rc + 1
-    if framearr[3] - framearr[1] == 0:
-        tmp[4] = scalearr[0]
-        tmp[5] = scalearr[1]
-        tmp[6] = scalearr[0]
-        tmp[7] = scalearr[1] + 10
+    if framearr[7] - framearr[5] == 0:
+        tmp[4] = dataarr[0]
+        tmp[5] = dataarr[1]
+        tmp[6] = dataarr[0]
+        tmp[7] = dataarr[1] + 10
         res[2] = str(res[2]) + "1"
-    elif framearr[2] - framearr[0] == 0:
-        tmp[4] = scalearr[0]
-        tmp[5] = scalearr[1]
-        tmp[6] = scalearr[0] + 10
-        tmp[7] = scalearr[1]
+    elif framearr[6] - framearr[4] == 0:
+        tmp[4] = dataarr[0]
+        tmp[5] = dataarr[1]
+        tmp[6] = dataarr[0] + 10
+        tmp[7] = dataarr[1]
         res[2] = str(res[2]) + "2"
     else:
-        tmp[4] = scalearr[0]
-        tmp[5] = scalearr[1]
-        tmp[6] = scalearr[0] + 10
-        tmp[7] = scalearr[1] + ((framearr[7] - framearr[5]) / (framearr[6] - framearr[4]) * 10)
+        tmp[4] = dataarr[0]
+        tmp[5] = dataarr[1]
+        tmp[6] = dataarr[0] + 10
+        tmp[7] = dataarr[1] + ((framearr[7] - framearr[5]) / (framearr[6] - framearr[4]) * 10)
         res[2] = str(res[2]) + "3"
     py = origin(tmp)
-    res[1] = math.sqrt((dataarr[0] - px[0]) ** 2 + (dataarr[1] - px[1]) ** 2) * (scalearr[3] / math.sqrt((framearr[4] - framearr[6]) ** 2 + (framearr[5] - framearr[7]) ** 2))
-    res[0] = math.sqrt((dataarr[0] - py[0]) ** 2 + (dataarr[1] - py[1]) ** 2) * (scalearr[2] / math.sqrt((framearr[0] - framearr[2]) ** 2 + (framearr[1] - framearr[3]) ** 2))
+    res[1] = math.sqrt((orgarr[0] - px[0]) ** 2 + (orgarr[1] - px[1]) ** 2) * (dataarr[3] / math.sqrt((framearr[4] - framearr[6]) ** 2 + (framearr[5] - framearr[7]) ** 2))
+    res[0] = math.sqrt((orgarr[0] - py[0]) ** 2 + (orgarr[1] - py[1]) ** 2) * (dataarr[2] / math.sqrt((framearr[0] - framearr[2]) ** 2 + (framearr[1] - framearr[3]) ** 2))
     rc = 0
     rm = len(framearr)
     tmp.clear()
@@ -63,16 +63,16 @@ def compute(framearr, dataarr, scalearr):
         tmp.append(framearr[rc])
         rc = rc + 1
     if framearr[3] - framearr[1] == 0:
-        if (dataarr[0] < py[0] and framearr[2] < framearr[0]) or (dataarr[0] > py[0] and framearr[2] > framearr[0]):
+        if not ((orgarr[0] < py[0] and framearr[2] < framearr[0]) or (orgarr[0] > py[0] and framearr[2] > framearr[0])):
             res[0] = -res[0]
     else:
-        if (dataarr[1] < py[1] and framearr[3] < framearr[1]) or (dataarr[1] > py[1] and framearr[3] > framearr[1]):
+        if not ((orgarr[1] < py[1] and framearr[3] < framearr[1]) or (orgarr[1] > py[1] and framearr[3] > framearr[1])):
             res[0] = -res[0]
     if framearr[7] - framearr[5] == 0:
-        if (dataarr[0] < px[0] and framearr[6] < framearr[4]) or (dataarr[0] > px[0] and framearr[6] > framearr[4]):
+        if not ((orgarr[0] < px[0] and framearr[6] < framearr[4]) or (orgarr[0] > px[0] and framearr[6] > framearr[4])):
             res[1] = -res[1]
     else:
-        if (dataarr[1] < px[1] and framearr[7] < framearr[5]) or (dataarr[1] > px[1] and framearr[7] > framearr[5]):
+        if not ((orgarr[1] < px[1] and framearr[7] < framearr[5]) or (orgarr[1] > px[1] and framearr[7] > framearr[5])):
             res[1] = -res[1]
     return res
 
