@@ -1,54 +1,32 @@
 import matplotlib
 from matplotlib import pyplot as plt
 
-matplotlib.use('GTKAgg')
+from matplotlib.figure import Figure
+
+# draw the figure so the animations will work
+fig_xt: Figure = plt.gcf()
+fig_xt.show()
+fig_xt.canvas.draw()
+
+plt.xlim([0, 100])
+plt.ylim([0, 100])
+
+plt.subplot(2, 1, 1)
+plt.title('A tale of 2 subplots')
+plt.ylabel('Damped oscillation')
+
+plt.subplot(2, 1, 2)
+plt.xlabel('Time (s)')
+plt.ylabel('Undamped')
 
 
-def run_plot_thread():
+def plot_data(x, y, t):
+    plt.subplot(2, 1, 1)
+    plt.plot([x], [t], '.-')
+    plt.subplot(2, 1, 2)
+    plt.plot([y], [t], '.-')
 
-    global scaled_data
+    # plt.pause(0.01)  # I ain't needed!!!
 
-    fig, ax = plt.subplots(1, 1)
-    ax.set_aspect('equal')
-    ax.set_xlim(0, 255)
-    ax.set_ylim(0, 255)
-    ax.hold(True)
-
-    # Wait for our first data point to be available
-    while len(scaled_data) != 3 or isinstance(scaled_data[2], str):
-        pass
-
-    x = scaled_data[0]
-    y = scaled_data[1]
-
-    plt.show(False)
-    plt.draw()
-
-    background = fig.canvas.copy_from_bbox(ax.bbox)
-
-    points = ax.plot(x, y, 'o')[0]
-
-    while True:
-        if len(scaled_data) == 3 and not isinstance(scaled_data[2], str):
-
-            # update the xy data
-            x = scaled_data[0]
-            y = scaled_data[1]
-            z = scaled_data[2]
-            points.set_data(x, y)
-
-            # restore background
-            fig.canvas.restore_region(background)
-
-            # redraw just the points
-            ax.draw_artist(points)
-
-            # fill in the axes rectangle
-            fig.canvas.blit(ax.bbox)
-
-            #
-            # else:
-            #     # redraw everything
-            #     fig.canvas.draw()
-
-        plt.close(fig)
+    # update canvas immediately
+    fig_xt.canvas.draw()

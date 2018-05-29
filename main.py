@@ -3,7 +3,7 @@ import threading
 import cv2 as cv
 import sys
 
-from graph import run_plot_thread
+from graph import plot_data
 from process import process
 from tracking_utility import no_op
 from mtrackmath import compute
@@ -72,9 +72,6 @@ cv.createTrackbar("Y Scale", "bars", 1000, 1000, no_op)
 
 cv.setMouseCallback("frame", on_win_click, )
 
-plot_thread = threading.Thread(target=run_plot_thread, args=())
-plot_thread.daemon = True  # Daemonize thread
-plot_thread .start()  # Start the execution
 
 
 while True:
@@ -113,7 +110,9 @@ while True:
 
     # Processing data
     scaled_data = compute(points, org_data, [raw_x, raw_y, scales[0], scales[1]])
-    print(scaled_data)
+
+    if len(scaled_data) == 3 and not isinstance(scaled_data[2], str):
+        plot_data(scaled_data[0], scaled_data[1], scaled_data[2])
 
     # Display the resulting frame
     cv.imshow("frame", drawn_frame)
