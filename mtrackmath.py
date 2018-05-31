@@ -55,9 +55,9 @@ def compute(framearr, orgarr, dataarr):
         res[2] = str(res[2]) + "3"
     py = origin(tmp)
     res[1] = math.sqrt((orgarr[0] - px[0]) ** 2 + (orgarr[1] - px[1]) ** 2) * (
-                dataarr[3] / math.sqrt((framearr[4] - framearr[6]) ** 2 + (framearr[5] - framearr[7]) ** 2))
+            dataarr[3] / math.sqrt((framearr[4] - framearr[6]) ** 2 + (framearr[5] - framearr[7]) ** 2))
     res[0] = math.sqrt((orgarr[0] - py[0]) ** 2 + (orgarr[1] - py[1]) ** 2) * (
-                dataarr[2] / math.sqrt((framearr[0] - framearr[2]) ** 2 + (framearr[1] - framearr[3]) ** 2))
+            dataarr[2] / math.sqrt((framearr[0] - framearr[2]) ** 2 + (framearr[1] - framearr[3]) ** 2))
     rc = 0
     rm = len(framearr)
     tmp.clear()
@@ -117,7 +117,7 @@ def origin(d):
         r[2] = 4
     else:
         r[0] = ((((d[7] - d[5]) / (d[6] - d[4])) * d[4]) - (((d[3] - d[1]) / (d[2] - d[0])) * d[0]) + d[1] - d[5]) / (
-                    ((d[7] - d[5]) / (d[6] - d[4])) - ((d[3] - d[1]) / (d[2] - d[0])))
+                ((d[7] - d[5]) / (d[6] - d[4])) - ((d[3] - d[1]) / (d[2] - d[0])))
         r[1] = ((d[3] - d[1]) / (d[2] - d[0])) * (r[0] - d[0]) + d[1]
         r[2] = 5
     return r

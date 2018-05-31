@@ -26,7 +26,7 @@ cv.namedWindow("bars", cv.WINDOW_NORMAL)
 cv.namedWindow("graph", cv.WINDOW_NORMAL)
 cv.resizeWindow("graph", 500, 500)
 
-blank = np.zeros((256, 256, 1), dtype = "uint8")
+blank = np.zeros((256, 256, 1), dtype="uint8")
 
 # These values are used to filter the camera image so that H is between Hmin and Hmax, S is between Smin and Smax, and
 # V is between Vmin and Vmax.  If the HSV value falls outside of any of the ranges, then it is set to 0 (a black pixel).
@@ -103,7 +103,7 @@ while True:
     #
     # ret is a True or False value if the camera read was successful (unused)
     ret, frame = cap.read()
-    blank = np.zeros((500, 500, 3), dtype = "uint8")
+    blank = np.zeros((500, 500, 3), dtype="uint8")
 
     # Our operations on the frame come here
     image, masked, thresholded, path = process(frame)
@@ -133,15 +133,15 @@ while True:
     data.append(scaled_data)
     while len(data) > 100:
         data.pop(0)
-    if len(data) > 5 and (not ((data[len(data)-2][2] - data[len(data)-1][2]) == 0)):
-        #ax = ((raw_xprev - raw_x)/(data[len(data)-2][2] - data[len(data)-1][2])-vx)/(data[len(data)-2][2] - data[len(data)-1][2])
-        #ay = ((raw_yprev - raw_y)/(data[len(data)-2][2] - data[len(data)-1][2])-vy)/(data[len(data)-2][2] - data[len(data)-1][2])
-        vx = (raw_xprev - raw_x)/(data[len(data)-2][2] - data[len(data)-1][2])
-        vy = (raw_yprev - raw_y)/(data[len(data)-2][2] - data[len(data)-1][2])
+    if len(data) > 5 and (not ((data[len(data) - 2][2] - data[len(data) - 1][2]) == 0)):
+        # ax = ((raw_xprev - raw_x)/(data[len(data)-2][2] - data[len(data)-1][2])-vx)/(data[len(data)-2][2] - data[len(data)-1][2])
+        # ay = ((raw_yprev - raw_y)/(data[len(data)-2][2] - data[len(data)-1][2])-vy)/(data[len(data)-2][2] - data[len(data)-1][2])
+        vx = (raw_xprev - raw_x) / (data[len(data) - 2][2] - data[len(data) - 1][2])
+        vy = (raw_yprev - raw_y) / (data[len(data) - 2][2] - data[len(data) - 1][2])
     raw_xprev = raw_x
     raw_yprev = raw_y
-    
-    cv.arrowedLine(drawn_frame, (int(raw_x), int(raw_y)),(int(raw_x+vx), int(raw_y+vy)), (255, 255, 0), 5)
+
+    cv.arrowedLine(drawn_frame, (int(raw_x), int(raw_y)), (int(raw_x + vx), int(raw_y + vy)), (255, 255, 0), 5)
     b = 0
     max_x = data[0][0]
     max_y = data[0][1]
@@ -156,23 +156,27 @@ while True:
         b += 1
     b = 0
     if max_x > 0:
-        max_x = 500/max_x
+        max_x = 500 / max_x
     if max_y > 0:
-        max_y = 500/max_y
+        max_y = 500 / max_y
     if max_t > 0:
-        max_t = 500/max_t
+        max_t = 500 / max_t
     while b < (len(data) - 1):
-        if int(500-data[b+1][0]*max_x) == 0 and not (int(500-data[b][0]*max_x) == 0):
-            cv.line(blank, (int(b*5),int(500-data[b][0]*max_x)),(int(b*5),int(500-data[b][0]*max_x)), (255,0,0),5)
+        if int(500 - data[b + 1][0] * max_x) == 0 and not (int(500 - data[b][0] * max_x) == 0):
+            cv.line(blank, (int(b * 5), int(500 - data[b][0] * max_x)), (int(b * 5), int(500 - data[b][0] * max_x)),
+                    (255, 0, 0), 5)
         else:
-            cv.line(blank, (int(b*5),int(500-data[b][0]*max_x)),(int(b*5),int(500-data[b+1][0]*max_x)), (255,0,0),5)
-        if int(500-data[b+1][1]*max_x) == 0 and not (int(500-data[b][1]*max_x) == 0):
-            cv.line(blank, (int(b*5),int(500-data[b][1]*max_x)),(int(b*5),int(500-data[b][1]*max_x)), (0,0,255),5)
+            cv.line(blank, (int(b * 5), int(500 - data[b][0] * max_x)), (int(b * 5), int(500 - data[b + 1][0] * max_x)),
+                    (255, 0, 0), 5)
+        if int(500 - data[b + 1][1] * max_x) == 0 and not (int(500 - data[b][1] * max_x) == 0):
+            cv.line(blank, (int(b * 5), int(500 - data[b][1] * max_x)), (int(b * 5), int(500 - data[b][1] * max_x)),
+                    (0, 0, 255), 5)
         else:
-            cv.line(blank, (int(b*5),int(500-data[b][1]*max_x)),(int(b*5),int(500-data[b+1][1]*max_x)), (0,0,255),5)
+            cv.line(blank, (int(b * 5), int(500 - data[b][1] * max_x)), (int(b * 5), int(500 - data[b + 1][1] * max_x)),
+                    (0, 0, 255), 5)
         b += 1
-    #cv.arrowedLine(drawn_frame, (int(raw_x), int(raw_y)),(int(raw_x+ax), int(raw_y+ay)), (0, 255, 255), 5)
-    #print(str(vx) + "," + str(vy))
+    # cv.arrowedLine(drawn_frame, (int(raw_x), int(raw_y)),(int(raw_x+ax), int(raw_y+ay)), (0, 255, 255), 5)
+    # print(str(vx) + "," + str(vy))
     # print(scaled_data)
 
     if len(scaled_data) == 3 and not isinstance(scaled_data[2], str):
@@ -180,7 +184,7 @@ while True:
 
     # Display the resulting frame
     cv.imshow("frame", drawn_frame)
-    cv.imshow("mask", image)
+    cv.imshow("tracking", image)
     cv.imshow("thresh", thresholded)
     cv.imshow("graph", blank)
 

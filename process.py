@@ -22,9 +22,9 @@ def process(frame):
     # Get the values from the sliders and adjust the filter values properly
     # We call these green because the LED is green.  If the LEDs were a different color, then we'd change that here.
     lower_hsv = np.array([cv.getTrackbarPos('H Min', 'bars'), cv.getTrackbarPos('S Min', 'bars'),
-                            cv.getTrackbarPos('V Min', 'bars')])  # HSV Value
+                          cv.getTrackbarPos('V Min', 'bars')])  # HSV Value
     upper_hsv = np.array([cv.getTrackbarPos('H Max', 'bars'), cv.getTrackbarPos('S Max', 'bars'),
-                            cv.getTrackbarPos('V Max', 'bars')])  # HSV Value
+                          cv.getTrackbarPos('V Max', 'bars')])  # HSV Value
 
     # Blur to reduce noise
     # The blur makes very small pixel regions of 5 by 5 "fuzz" into 0.  It removes spurious small regions that match the
@@ -71,7 +71,7 @@ def process(frame):
         epsilon = 0.01 * cv.arcLength(contours[x], True)
         contours[x] = cv.approxPolyDP(contours[x], epsilon, True)
 
-    # Eliminate contours by perimeter
+        # Eliminate contours by perimeter
     # This removes entries in contours that are too small, less than MIN_PERIMETER in bounding box length
     contours = [x for x in contours if not cv.arcLength(x, True) < MIN_PERIMETER]
 
