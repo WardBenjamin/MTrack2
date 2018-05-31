@@ -83,7 +83,6 @@ cv.createTrackbar("Y Scale", "bars", 1000, 1000, no_op)
 
 cv.setMouseCallback("frame", on_win_click, )
 
-<<<<<<< HEAD
 data = []
 raw_xprev = 0
 raw_yprev = 0
@@ -92,12 +91,7 @@ vx = 0
 ax = 0
 ay = 0
 
-time_offset = time.clock();
-=======
 time_offset = time.clock()
-
-
->>>>>>> 125ad12f898d3e1cd9b941feece9e1903ebadd25
 while True:
     # image is pulled from the camera using OpenCV. This variable represents all of the pixel values coming off the
     # camera stream. The word "frame" represents a single image from a stream of images from a camera, so "frame" and
