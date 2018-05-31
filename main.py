@@ -56,12 +56,17 @@ def on_win_click(event, x, y, flags, params):
         time_offset = time.clock()
         data = []
 
+
 # These values are used to define the 2d plane mapped to pixel coordinates
 points = [1, 0, 2, 0, 0, 1, 0, 2]
+
 # This is used to keep track of which points is being set. If equal to len(points), no points are currently set
-current_point = 0;
+current_point = 0
+
 # Used for scaling units
 scales = [1, 1]
+
+scaled_data = []
 
 # Used for converting raw pixel data to real data
 raw_x = 0
@@ -78,6 +83,7 @@ cv.createTrackbar("Y Scale", "bars", 1000, 1000, no_op)
 
 cv.setMouseCallback("frame", on_win_click, )
 
+<<<<<<< HEAD
 data = []
 raw_xprev = 0
 raw_yprev = 0
@@ -87,6 +93,11 @@ ax = 0
 ay = 0
 
 time_offset = time.clock();
+=======
+time_offset = time.clock()
+
+
+>>>>>>> 125ad12f898d3e1cd9b941feece9e1903ebadd25
 while True:
     # image is pulled from the camera using OpenCV. This variable represents all of the pixel values coming off the
     # camera stream. The word "frame" represents a single image from a stream of images from a camera, so "frame" and
@@ -169,6 +180,9 @@ while True:
     #cv.arrowedLine(drawn_frame, (int(raw_x), int(raw_y)),(int(raw_x+ax), int(raw_y+ay)), (0, 255, 255), 5)
     #print(str(vx) + "," + str(vy))
     # print(scaled_data)
+
+    if len(scaled_data) == 3 and not isinstance(scaled_data[2], str):
+        print(scaled_data[0], scaled_data[1], scaled_data[2])
 
     # Display the resulting frame
     cv.imshow("frame", drawn_frame)
